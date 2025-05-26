@@ -45,6 +45,8 @@ Built a MERN stack web app integrated with machine learning to optimize EV charg
 | Technology | Role |
 |------------|------|
 | **MongoDB** | Database |
-| **Express.js** | Backend API |
+| **Express.js, Flask** | Backend API |
 | **React.js** | Frontend UI |
 | **Node.js** | Runtime |
+| **Sklearn, Python** | SVM and K-Means models for prediction|
+| **Pickle, Python** | Importing pretrained model|
