@@ -49,5 +49,59 @@ def predict():
     })
 
 
+@app.route('/predict', methods=['POST'])
+def stations_predict():
+    """Endpoint for getting optimal locations"""
+    try:
+        # Get parameters from request
+        data = request.json
+        n_locations = data.get('n_locations', 5)
+        min_distance_km = data.get('min_distance_km', 1.5)
+        
+        # Get predictions
+        results = model.get_optimal_locations(n_locations, min_distance_km)
+        
+        # Convert to JSON-serializable format
+        output = results[['latitude', 'longitude', 'placement_score']].to_dict('records')
+        # with open('charging_station_model.pkl', 'wb') as f:
+        # pickle.dump(model, f)
+        return jsonify({
+            'status': 'success',
+            'predictions': output
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
+
+@app.route('/add_station', methods=['POST'])
+def add_station():
+    """Endpoint for adding new stations"""
+    try:
+        data = request.json
+        lat = float(data['latitude'])
+        lon = float(data['longitude'])
+        
+        # Update model
+        updated_locations = model.add_station(lat, lon)
+        
+        # Return updated predictions
+        output = updated_locations[['latitude', 'longitude', 'placement_score']].to_dict('records')
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Station added successfully',
+            'updated_predictions': output
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
+
+
 if __name__ == "__main__":
     app.run(debug=True)
